@@ -2,7 +2,7 @@
 
 // algo - object which has a .random() function
 // - JavaScript Math is a valid algo
-// - "MersenneTwister" banksean/mersenne-twister.js works as well (https://gist.github.com/banksean/300494)
+// - "MersenneTwister" from banksean/mersenne-twister.js also works (https://gist.github.com/banksean/300494)
 Random = function(algo) {
 	this.algo = algo || Math
 }

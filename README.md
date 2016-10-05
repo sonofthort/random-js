@@ -1,8 +1,8 @@
 # random-js
-Simple wrapper for random number generator functions.
+Provides a high level interface for random number generation, and is algorithm agnostic.
 
-Wraps any object with a .random() function.
+Wraps any object which has a .random() function which returns a floating point value >= 0 and < 1.
 
 Can wrap JavaScript "Math" to use the builtin rng.
 
-Also works with "MersenneTwister" banksean/mersenne-twister.js (https://gist.github.com/banksean/300494)
+Can also wrap "MersenneTwister" from banksean/mersenne-twister.js (https://gist.github.com/banksean/300494)
