@@ -1,5 +1,5 @@
 # random-js
-Provides a high level interface for random number generation, and is algorithm agnostic.
+Provides a high level interface for random number generation, and is algorithm agnostic, allowing seeded algorithms.
 
 Wraps any object which has a .random() function which returns a floating point value >= 0 and < 1.
 
