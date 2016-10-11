@@ -41,11 +41,11 @@ Random.prototype = {
 	nextElement: function(arr) {
 		return arr[this.nextIndex(arr)]
 	},
-	nextKey: function(obj, props) {
-		return this.nextElement(props || Object.getOwnPropertyNames(obj))
+	nextKey: function(obj) {
+		return this.nextElement(Object.getOwnPropertyNames(obj))
 	},
-	nextValue: function(obj, props) {
-		return obj[this.nextKey(obj, props)]
+	nextValue: function(obj) {
+		return obj[this.nextKey(obj)]
 	},
 	// in-place shuffle
 	shuffle: function(arr) {
