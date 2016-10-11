@@ -1,7 +1,7 @@
 // Eric Thortsen - https://github.com/sonofthort/random-js
 
 // algo - object which has a .random() function
-// - JavaScript "Math" is a valid algo
+// - JavaScript "Math" works
 // - "MersenneTwister" from banksean/mersenne-twister.js works very well (https://gist.github.com/banksean/300494)
 Random = function(algo) {
 	this.algo = algo || Math
