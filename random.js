@@ -2,7 +2,7 @@
 
 // algo - object which has a .random() function
 // - JavaScript Math is a valid algo
-// - "MersenneTwister" from banksean/mersenne-twister.js also works (https://gist.github.com/banksean/300494)
+// - "MersenneTwister" from banksean/mersenne-twister.js works very well (https://gist.github.com/banksean/300494)
 Random = function(algo) {
 	this.algo = algo || Math
 }
@@ -48,19 +48,14 @@ Random.prototype = {
 		return obj[this.nextKey(obj)]
 	},
 	// in-place shuffle
+	// https://github.com/coolaj86/knuth-shuffle
 	shuffle: function(arr) {
-		var length = arr.length,
-			n = length * 2
-		
-		for (var i = 0; i < n; ++i) {
-			var i1 = this.nextIntBelow(length),
-				i2 = this.nextIntBelow(length),
-				t = a[i1]
-			
-			arr[i1] = arr[i2]
-			arr[i2] = t
+		for (var i = arr.length; i !== 0;) {
+			var j = this.nextIntBelow(i)
+			i -= 1
+			var t = arr[i]; arr[i] = arr[j]; arr[j] = t
 		}
-		
+
 		return arr
 	}
 }
@@ -69,7 +64,8 @@ Random.randomSeed = function() {
 	return Math.ceil(Math.random() * 4294967295)
 }
 
-// just a simple hash function
+// a simple hash function
+// http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
 Random.seedFromString = function(str) {
 	var hash = 0
 	
@@ -85,8 +81,8 @@ Random.seedFromString = function(str) {
 	return hash
 }
 
-// some simple seeded rng algo I found (linear congruent generator), I usually prefer MersenneTwister though
-// https://programmers.stackexchange.com/questions/260969/original-source-of-seed-9301-49297-233280-random-algorithm
+// simple seeded algo (linear congruent generator) - not as random as other algos
+// http://indiegamr.com/generate-repeatable-random-numbers-in-js/
 Random.SimpleAlgo = function(seed) {
 	this.seed = seed || Random.randomSeed()
 }
