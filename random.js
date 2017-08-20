@@ -11,14 +11,16 @@ Random.prototype = {
 	next: function() {
 		return this.algo.random()
 	},
-	nextWithin: function(max, min) {
-		return min + this.algo.random() * (max - min)
+	nextWithin: function(a, b) {
+		return a < b ?
+			a + this.algo.random() * (b - a) :
+			b + this.algo.random() * (a - b)
 	},
 	nextBelow: function(max) {
 		return this.algo.random() * max
 	},
-	nextIntWithin: function(max, min) {
-		return Math.floor(min + this.algo.random() * (max - min))
+	nextIntWithin: function(a, b) {
+		return Math.floor(this.nextWithin(a, b))
 	},
 	nextIntBelow: function(max) {
 		return Math.floor(this.algo.random() * max)
