@@ -1,6 +1,6 @@
 // Eric Thortsen - https://github.com/sonofthort/random-js
 
-// algo - object which has a .random() function
+// algo - object which has a .random() function which returns a number >= 0 and < 1
 // - JavaScript "Math" works
 // - "MersenneTwister" from banksean/mersenne-twister.js works very well (https://gist.github.com/banksean/300494)
 Random = function(algo) {
@@ -8,37 +8,24 @@ Random = function(algo) {
 }
 
 Random.prototype = {
-	next: function() {
-		return this.algo.random()
+	// nullary: returns value >= 0 and < 1
+	// unary: returns value >= 0 and < a
+	// binary: returns value >= min(a, b) and < max(a, b)
+	next: function(a, b) {
+		var v = this.algo.random()
+		return a != null ? (b != null ? (a < b ? a + v * (b - a) : b + v * (a - b)) : v * a) : v
 	},
-	nextWithin: function(a, b) {
-		return a < b ?
-			a + this.algo.random() * (b - a) :
-			b + this.algo.random() * (a - b)
+	nextInt: function(a, b) {
+		return Math.floor(this.next(a, b))
 	},
-	nextBelow: function(max) {
-		return this.algo.random() * max
+	nextBool: function(odds) {
+		return this.algo.random() < (odds != null ? odds : 0.5)
 	},
-	nextIntWithin: function(a, b) {
-		return Math.floor(this.nextWithin(a, b))
-	},
-	nextIntBelow: function(max) {
-		return Math.floor(this.algo.random() * max)
-	},
-	nextBoolOdds: function(odds) {
-		return this.algo.random() < odds
-	},
-	nextBool: function() {
-		return this.nextBoolOdds(0.5)
-	},
-	nextSignOdds: function(odds) {
-		return this.algo.random() < odds ? -1 : 1
-	},
-	nextSign: function() {
-		return this.nextSignOdds(0.5)
+	nextSign: function(odds) {
+		return this.nextBool(odds) ? 1 : -1
 	},
 	nextIndex: function(arr) {
-		return this.nextIntBelow(arr.length)
+		return Math.floor(this.algo.random() * arr.length)
 	},
 	nextElement: function(arr) {
 		return arr[this.nextIndex(arr)]
@@ -46,16 +33,20 @@ Random.prototype = {
 	nextKey: function(obj) {
 		return this.nextElement(Object.getOwnPropertyNames(obj))
 	},
-	nextValue: function(obj) {
-		return obj[this.nextKey(obj)]
+	nextValue: function(obj, keys) {
+		return obj[keys ? this.nextElement(keys) : this.nextKey(obj)]
 	},
 	// in-place shuffle
 	// https://github.com/coolaj86/knuth-shuffle
 	shuffle: function(arr) {
+		var algo = this.algo
+		
 		for (var i = arr.length; i !== 0;) {
-			var j = this.nextIntBelow(i)
-			i -= 1
-			var t = arr[i]; arr[i] = arr[j]; arr[j] = t
+			var j = Math.floor(algo.random() * (i--))
+				t = arr[i]
+			
+			arr[i] = arr[j]
+			arr[j] = t
 		}
 
 		return arr
@@ -69,13 +60,14 @@ Random.randomSeed = function() {
 // a simple hash function
 // http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
 Random.seedFromString = function(str) {
-	var hash = 0
+	var hash = 0,
+		len = str.length
 	
-	if (str.length === 0) {
+	if (len === 0) {
 		return hash
 	}
 	
-	for (var i = 0, len = str.length; i < len; ++i) {
+	for (var i = 0; i < len; ++i) {
 		hash = ((hash << 5) - hash) + str.charCodeAt(i)
 		hash |= 0 // Convert to 32bit integer
 	}
