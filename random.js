@@ -31,7 +31,7 @@ Random.prototype = {
 		return arr[this.nextIndex(arr)]
 	},
 	nextKey: function(obj) {
-		return this.nextElement(Object.getOwnPropertyNames(obj))
+		return this.nextElement(Object.keys(obj))
 	},
 	nextValue: function(obj, keys) {
 		return obj[keys ? this.nextElement(keys) : this.nextKey(obj)]
