@@ -36,6 +36,9 @@ Random.prototype = {
 	nextValue: function(obj, keys) {
 		return obj[keys ? this.nextElement(keys) : this.nextKey(obj)]
 	},
+	nextSeed: function() {
+		return this.nextInt(4294967295)
+	},
 	// in-place shuffle
 	// https://github.com/coolaj86/knuth-shuffle
 	shuffle: function(arr) {
