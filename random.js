@@ -12,8 +12,18 @@ Random.prototype = {
 	// unary: returns value >= 0 and < a
 	// binary: returns value >= min(a, b) and < max(a, b)
 	next: function(a, b) {
-		var v = this.algo.random()
-		return a != null ? (b != null ? (a < b ? a + v * (b - a) : b + v * (a - b)) : v * a) : v
+		if (a == null) {
+			a = 0
+		}
+		if (b == null) {
+			b = 1
+		}
+		if (a > b) {
+			var t = a
+			a = b
+			b = t
+		}
+		return this.algo.random() * b + a
 	},
 	nextInt: function(a, b) {
 		return Math.floor(this.next(a, b))
