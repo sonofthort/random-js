@@ -8,9 +8,6 @@ Random = function(algo) {
 }
 
 Random.prototype = {
-	// nullary: returns value >= 0 and < 1
-	// unary: returns value >= 0 and < a
-	// binary: returns value >= min(a, b) and < max(a, b)
 	next: function(a, b) {
 		if (a == null) {
 			a = 0
@@ -23,7 +20,7 @@ Random.prototype = {
 			a = b
 			b = t
 		}
-		return this.algo.random() * b + a
+		return this.algo.random() * (b - a) + a
 	},
 	nextInt: function(a, b) {
 		return Math.floor(this.next(a, b))
@@ -37,14 +34,34 @@ Random.prototype = {
 	nextIndex: function(arr) {
 		return Math.floor(this.algo.random() * arr.length)
 	},
-	nextElement: function(arr) {
-		return arr[this.nextIndex(arr)]
+	nextElement: function(arr, filter) {
+		if (filter == null) {
+			return arr[this.nextIndex(arr)]
+		}
+		
+		var best = null,
+			bestWeight = -1,
+			len = array.length
+		
+		for (var i = 0; i < len; ++i) {
+			var value = arr[i]
+			if (filter(value, i)) {
+				var weight = this.algo.random()
+				if (weight > bestWeight) {
+					best = value
+					bestWeight = weight
+				}
+			}
+		}
+		
+		return best
 	},
-	nextKey: function(obj) {
+	nextKey: function(obj, filter) {
 		return this.nextElement(Object.keys(obj))
 	},
 	nextValue: function(obj, keys) {
-		return obj[keys ? this.nextElement(keys) : this.nextKey(obj)]
+		var key = keys ? this.nextElement(keys) : this.nextKey(obj)
+		return key ? obj[key] : null
 	},
 	nextSeed: function() {
 		return this.nextInt(4294967295)
