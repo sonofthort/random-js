@@ -41,7 +41,7 @@ Random.prototype = {
 		
 		var best = null,
 			bestWeight = -1,
-			len = array.length
+			len = arr.length
 		
 		for (var i = 0; i < len; ++i) {
 			var value = arr[i]
