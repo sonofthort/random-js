@@ -57,10 +57,10 @@ Random.prototype = {
 		return best
 	},
 	nextKey: function(obj, filter) {
-		return this.nextElement(Object.keys(obj))
+		return this.nextElement(Object.keys(obj), filter)
 	},
-	nextValue: function(obj, keys) {
-		var key = keys ? this.nextElement(keys) : this.nextKey(obj)
+	nextValue: function(obj, keys, filter) {
+		var key = keys ? this.nextElement(keys, filter) : this.nextKey(obj, filter)
 		return key ? obj[key] : null
 	},
 	nextSeed: function() {
