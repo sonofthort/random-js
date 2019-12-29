@@ -44,9 +44,13 @@ Random.prototype = {
 			len = arr.length
 		
 		for (var i = 0; i < len; ++i) {
-			var value = arr[i]
-			if (filter(value, i)) {
+			var value = arr[i],
+				filterResult = filter(value, i)
+			if (filterResult) { // accept filterResult if its not false, not zero, and not null/undefined
 				var weight = this.algo.random()
+				if (typeof filterResult === 'number') {
+					weight *= filterResult
+				}
 				if (weight > bestWeight) {
 					best = value
 					bestWeight = weight
@@ -56,12 +60,19 @@ Random.prototype = {
 		
 		return best
 	},
+	// TODO: make an interface for storing Object.keys(obj) so that it is not recreated each time
 	nextKey: function(obj, filter) {
 		return this.nextElement(Object.keys(obj), filter)
 	},
 	nextValue: function(obj, keys, filter) {
 		var key = keys ? this.nextElement(keys, filter) : this.nextKey(obj, filter)
 		return key ? obj[key] : null
+	},
+	// obj is in the form {key1: weight1, key2: weight2}, and nextKeyFromWeightedObject selects a key based on each key's weight 
+	nextKeyFromWeightedObject: function(obj) {
+		return this.nextKey(obj, function(key) {
+			return obj[key]
+		})
 	},
 	nextSeed: function() {
 		return this.nextInt(4294967295)
@@ -80,6 +91,39 @@ Random.prototype = {
 		}
 
 		return arr
+	},
+	selectBestIndex: function(arr, getWeight) {
+		var len = arr.length,
+			bestIndex = null,
+			bestWeight = null,
+			bestTieBreaker = null,
+			algo = this.algo
+		
+		for (var i = 0; i < len; ++i) {
+			var value = arr[i],
+				weight = getWeight != null ? getWeight(value) : value
+			
+			if (weight != null) {
+				if (bestIndex == null || bestWeight < weight) {
+					bestIndex = i
+					bestWeight = weight
+					bestTieBreaker = algo.random()
+				} else if (bestWeight === weight) {
+					var tieBreaker = algo.random()
+					if (tieBreaker > bestTieBreaker) {
+						bestIndex = i
+						bestWeight = weight
+						bestTieBreaker = tieBreaker
+					}
+				}
+			}
+		}
+		
+		return bestIndex
+	},
+	selectBestElement: function(arr, getWeight) {
+		var index = this.selectBestIndex(arr, getWeight)
+		return index != null ? arr[index] : null
 	}
 }
 
